@@ -1,0 +1,4 @@
+#!/bin/tcsh
+set d = `pwd`
+sbatch --dependency=singleton --job-name=bts $d/trim_galore/Run/Run.q
+echo Trimming has begun

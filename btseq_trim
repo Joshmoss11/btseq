@@ -1,0 +1,21 @@
+#!/bin/tcsh
+set d = `pwd`
+
+# if the sample name begins with a number add "R_" at the prefix
+#cd $d
+ls -1 *.gz | awk '{if ($0 ~ /^[0-9]/) print "mv " $0 " R_" $0}' | tcsh
+
+mkdir $d/trim_galore
+mkdir $d/trim_galore/Run
+touch $d/trim_galore/Run/Run.q
+chmod +x $d/trim_galore/Run/Run.q
+echo '#! /bin/sh' >> $d/trim_galore/Run/Run.q
+foreach f (`ls -1 *.gz`)
+echo ${f}
+echo '#! /bin/sh' >> $d/trim_galore/Run/${f}_trim_galore.q
+#echo srun /cs/icore/joshua.moss/scripts/trim_galore/trim_galore -o $1/trim_galore $1/${f} >> $1/trim_galore/Run/${f}_trim_galore.q
+echo trim_galore -a GATCGGAAGAGCA -o $d/trim_galore $d/${f} >> $d/trim_galore/Run/${f}_trim_galore.q
+echo sbatch --job-name=trim --output=$d/trim_galore/Run/${f}_trim.out --mem=4GB --cpus-per-task=3 --time=5:00:00 $d/trim_galore/Run/${f}_trim_galore.q >> $d/trim_galore/Run/Run.q
+end
+sbatch $d/trim_galore/Run/Run.q
+echo Trimming has begun

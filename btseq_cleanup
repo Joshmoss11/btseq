@@ -1,0 +1,2 @@
+#!/bin/csh
+rm -rf *gz *fa trim_galore

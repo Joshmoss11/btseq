@@ -1,0 +1,10 @@
+#!/bin/tcsh -f
+
+set outdir = `pwd`
+
+sbatch --dependency=singleton --job-name=bts ${outdir}/Run/Run.q
+echo Alignment has begun
+# In the end run the following to zip the results:
+#foreach n (`cat Def.txt | awk '{print $2}' | sort | uniq`)
+#zip ${n}_Results `du -a | grep -P 'summary$|hist$' | grep ${n} | awk '{print $2}'`
+#end

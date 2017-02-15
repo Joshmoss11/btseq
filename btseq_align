@@ -1,0 +1,25 @@
+#!/bin/tcsh -f
+
+set defs = BSTarget_input.txt
+set outdir = `pwd`
+mkdir ${outdir}/Run
+touch ${outdir}/Run/Run.q
+chmod +x ${outdir}/Run/Run.q 
+echo '#! /bin/sh' >> ${outdir}/Run/Run.q
+cat $defs | awk -v d=${outdir} '{Qout=d "/Run/" $2 "_" $1 ".q"; print "touch " d "/Run/" $2 "_" $1 ".q\n" \\
+"echo \047\043\\\041/bin/sh\047 >> " Qout "\n" \\
+"echo echo \\$HOSTNAME >> " Qout "\n" \\
+"echo mkdir " d "/" $2 "_" $1 ">> " Qout "\n" \\
+"echo cp -s " $4 " " d "/" $2 "_" $1 " >> " Qout "\n" \\
+"echo bismark_genome_preparation --bowtie2 " d "/" $2 "_" $1 " >> " Qout "\n" \\
+"echo bismark " d "/" $2 "_" $1 " " $3 " --bowtie2 -o " d "/" $2 "_" $1 "/Output --temp_dir " d "/" $2 "_" $1 "/Output >> " Qout "\n" \\
+"echo /cs/icore/joshua.moss/scripts/btseq/Analyze_Result.csh " $3 " " d "/" $2 "_" $1 " >> " Qout "\n" \\
+"echo sbatch --job-name=aln --mem=4GB --cpus-per-task=3 --time=5:00:00 --output=" d "/Run/" $2 "_" $1 ".q.out " d "/Run/" $2 "_" $1 ".q >> " d "/Run/Run.q"}' | tcsh >& /dev/null
+
+#echo Go to Run folder
+sbatch ${outdir}/Run/Run.q
+echo Alignment has begun
+# In the end run the following to zip the results:
+#foreach n (`cat Def.txt | awk '{print $2}' | sort | uniq`)
+#zip ${n}_Results `du -a | grep -P 'summary$|hist$' | grep ${n} | awk '{print $2}'`
+#end

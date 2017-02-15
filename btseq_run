@@ -1,0 +1,14 @@
+#!/bin/bash
+jidt=""
+for f in trim_galore/Run/A*q; do
+  jid=$(sbatch --job-name=trim --output=${f}.out --mem=4GB --cpus-per-task=3 --time=5:00:00 $f)
+  jid=${jid:(-7)}
+  jidt="${jidt}:${jid}"
+done
+jida=""
+for f in Run/Sample*q; do
+  jid=$(sbatch --job-name=aln --dependency=afterok$jidt --output=${f}.out --mem=4GB --cpus-per-task=5 --time=5:00:00 $f)
+  jid=${jid:(-7)}
+  jida="${jida}:${jid}"
+done
+sbatch --dependency=afterok$jida --job-name=sum --output=sum.out btseq_summary

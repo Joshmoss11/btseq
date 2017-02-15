@@ -1,0 +1,25 @@
+#!/bin/bash
+if [ "$1" = "" ]; then
+    echo "Run name is missing. Exiting"
+	exit 1
+fi
+export PATH=${PATH}:/cs/icore/joshua.moss/scripts/btseq
+Rscript /cs/icore/joshua.moss/scripts/btseq/btseq_setup.R
+#source /cs/icore/joshua.moss/scripts/btseq/btseq_setup
+jid1=$(sbatch --job-name=gr get_reads $1)
+jid1=${jid1:(-7)}
+jid2=$(sbatch --job-name=pt --dependency=afterok:$jid1 --output=prep_trim.out btseq_prepare_trim)
+jid2=${jid2:(-7)}
+jidt=":"
+for f in trim_galore/Run/A*q; do
+  sbatch --job-name=bts --output=.out --mem=2GB $f)
+  echo "File -> $f"
+	
+done
+jid3=$(sbatch --job-name=rt --dependency=afterok:$jid2 --output=run_trim.out btseq_run_trim)
+jid3=${jid3:(-7)}
+jid4=$(sbatch --job-name=pa --dependency=afterok:$jid3 --output=prep_aln.out btseq_prepare_align)
+jid4=${jid4:(-7)}
+jid5=$(sbatch --job-name=ra --dependency=afterok:$jid4 --output=run_aln.out btseq_run_align)
+jid5=${jid5:(-7)}
+jid6=$(sbatch --dependency=afterok:$jid5 --job-name=sum --output=sum.out btseq_summary)

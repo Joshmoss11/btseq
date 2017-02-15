@@ -1,0 +1,3 @@
+#!/bin/sh
+Rscript /cs/icore/joshua.moss/scripts/btseq/make_summary.R
+echo Done creating summary! Results are in Summary_results.txt

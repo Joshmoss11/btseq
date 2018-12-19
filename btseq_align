@@ -17,7 +17,7 @@ cat $defs | awk -v d=${outdir} '{Qout=d "/Run/" $2 "_" $1 ".q"; print "touch " d
 "echo sbatch --job-name=aln --mem=4GB --cpus-per-task=3 --time=5:00:00 --output=" d "/Run/" $2 "_" $1 ".q.out " d "/Run/" $2 "_" $1 ".q >> " d "/Run/Run.q"}' | tcsh >& /dev/null
 
 #echo Go to Run folder
-sbatch ${outdir}/Run/Run.q
+${outdir}/Run/Run.q
 echo Alignment has begun
 # In the end run the following to zip the results:
 #foreach n (`cat Def.txt | awk '{print $2}' | sort | uniq`)

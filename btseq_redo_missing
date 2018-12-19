@@ -1,0 +1,18 @@
+#!/bin/bash
+export PATH=${PATH}:/cs/icore/joshua.moss/scripts/btseq
+jida2=""
+n=$(ls -1 *fa | wc -l)
+nums=$(seq 1 $n)
+for i in $nums; do
+  sum_file=Sample_$i/Output/*summary
+  sum_file_exists=$(ls -1 $sum_file 2>/dev/null | wc -l)
+  if [ $sum_file_exists = "0" ]
+  then
+  echo Sample $i missing. Realigning this sample
+  f=Sample_${i}.q
+  jid=$(sbatch --job-name=aln --output=Run/$f.out --mem=4GB --cpus-per-task=5 --time=5:00:00 Run/$f)
+  jid=${jid:20}
+  jida2="${jida2}:${jid}"
+  fi
+done
+sbatch --dependency=afterany$jida2 --job-name=sum --output=sum.out btseq_summary

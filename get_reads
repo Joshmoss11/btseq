@@ -1,7 +1,9 @@
 #!/bin/tcsh
 #SBATCH --output=get_reads.out
-#SBATCH --mem=16GB
+#SBATCH --mem=32GB
+#SBATCH --time=4:00:00
 #SBATCH --cpus-per-task=16
+# --mem-per-cpu=2GB
 if ($#argv != 1) then
         echo "Usage: $0 <Run Name>"
         exit 0
@@ -9,6 +11,7 @@ endif
 cp /cs/nextseq/${1}/RunInfo.xml ./
 echo Nextseq data can be found in /cs/nextseq/${1} > run.info
 echo converting fastq files
-bcl2fastq -i /cs/nextseq/${1}/Data/Intensities/BaseCalls/ -o ./ --barcode-mismatches=0 --no-lane-splitting --no-bgzf-compression --sample-sheet bc_ss.csv
+#srun bcl2fastq -i /cs/nextseq/${1}/Data/Intensities/BaseCalls/ -o ./ --barcode-mismatches=0 --no-lane-splitting --no-bgzf-compression --sample-sheet bc_ss.csv
+srun bcl2fastq -r 2 -w 2 -d 4 -p 14 -i /cs/nextseq/${1}/Data/Intensities/BaseCalls/ -o ./ --barcode-mismatches=0 --no-lane-splitting --no-bgzf-compression --sample-sheet bc_ss.csv
 rm -rf InterOp Stats RunInfo.xml Reports Undetermined*
 echo done converting fastq files

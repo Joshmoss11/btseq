@@ -1,2 +1,21 @@
 #!/bin/csh
-rm -rf *gz *fa trim_galore
+rm -rf *gz *fa trim_galore Sample_*/Output/*txt Sample_*/Output/*sam Sample_*/Output/*png Sample_*/Output/*cov Sample_*/Output/*bedGraph
+echo done removing files
+echo reorganizing directory
+set n = `ls -1d Sample_* | wc -l`
+echo reorganizing $n samples
+mkdir CpG_hists
+mkdir CpA_hists
+mkdir summaries
+
+foreach i (`seq 1 $n`)
+	mv Sample_${i}/Output/CpG*hist CpG_hists/Sample_${i}_CpG.hist
+	mv Sample_${i}/Output/CpA*hist CpA_hists/Sample_${i}_CpA.hist
+	mv Sample_${i}/Output/*summary summaries/Sample_${i}.summary
+end
+rm -rf Sample*
+mkdir run_files
+mv Run run_files/.
+mv *out run_files/.
+mv BSTarget* run_files/.
+mv bc_ss.csv run_files/.

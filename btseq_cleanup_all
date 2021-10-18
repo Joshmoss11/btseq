@@ -1,0 +1,13 @@
+#!/bin/csh
+set d0 = `pwd`
+#find . -name 'Summary_results.txt' >! tmp1
+echo Finding messy directories
+find . -type d -name 'Sample_1' >! tmp1
+foreach f ( `cat tmp1` )
+	set d1 = $f:h
+	cd $d1
+	echo Cleaning up $d1
+	/cs/icore/joshua.moss/scripts/btseq/btseq_cleanup
+	cd $d0
+end
+rm -f tmp1

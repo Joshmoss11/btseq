@@ -19,3 +19,4 @@ mv Run run_files/.
 mv *out run_files/.
 mv BSTarget* run_files/.
 mv bc_ss.csv run_files/.
+gzip run_files/Run/*

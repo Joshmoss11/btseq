@@ -14,6 +14,9 @@ foreach f (`ls -1 *.gz`)
 echo ${f}
 echo '#! /bin/sh' >> $d/trim_galore/Run/${f}_trim_galore.q
 #echo srun /cs/icore/joshua.moss/scripts/trim_galore/trim_galore -o $1/trim_galore $1/${f} >> $1/trim_galore/Run/${f}_trim_galore.q
+echo module load bioinfo >> $d/trim_galore/Run/${f}_trim_galore.q
+echo module load cutadapt >> $d/trim_galore/Run/${f}_trim_galore.q
+echo module load trim_galore >> $d/trim_galore/Run/${f}_trim_galore.q
 echo trim_galore -a GATCGGAAGAGCA -o $d/trim_galore $d/${f} >> $d/trim_galore/Run/${f}_trim_galore.q
 echo '#! /bin/sh' >> $d/trim_galore/Run/Run.q
 echo sbatch --job-name=trim --output=$d/trim_galore/Run/${f}_trim.out --mem=4GB --cpus-per-task=3 --time=5:00:00 $d/trim_galore/Run/${f}_trim_galore.q >> $d/trim_galore/Run/Run.q

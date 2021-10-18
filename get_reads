@@ -8,10 +8,16 @@ if ($#argv != 1) then
         echo "Usage: $0 <Run Name>"
         exit 0
 endif
-cp /cs/nextseq/${1}/RunInfo.xml ./
-echo Nextseq data can be found in /cs/nextseq/${1} > run.info
+module load bcl2fastq
+cp /sci/data/nextseq/${1}/RunInfo.xml ./
+
+set wd = `pwd`
+echo Nextseq data can be found in /sci/data/nextseq/${1} > run.info
 echo converting fastq files
-#srun bcl2fastq -i /cs/nextseq/${1}/Data/Intensities/BaseCalls/ -o ./ --barcode-mismatches=0 --no-lane-splitting --no-bgzf-compression --sample-sheet bc_ss.csv
-srun bcl2fastq -r 2 -w 2 -d 4 -p 14 -i /cs/nextseq/${1}/Data/Intensities/BaseCalls/ -o ./ --barcode-mismatches=0 --no-lane-splitting --no-bgzf-compression --sample-sheet bc_ss.csv
+
+#srun bcl2fastq -r 2 -w 2 -d 4 -p 12 -i /sci/data/nextseq/${1}/Data/Intensities/BaseCalls/ -o ./ --barcode-mismatches=0 --no-lane-splitting --no-bgzf-compression --sample-sheet bc_ss.csv
+
+bcl2fastq -r 2 -w 2 -p 12 -i /sci/data/nextseq/${1}/Data/Intensities/BaseCalls/ -o $wd  --barcode-mismatches=0 --no-lane-splitting --no-bgzf-compression --sample-sheet bc_ss.csv
+
 rm -rf InterOp Stats RunInfo.xml Reports Undetermined*
 echo done converting fastq files

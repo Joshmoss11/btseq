@@ -5,9 +5,8 @@ if ($#argv != 2) then
 	exit 0
 endif
 
-set FastqName = $1
+set FastqName = $1:r:r
 set FastaDir = $2
-
 echo "Running bismark_methylation_extractor"
 set sam_name = ${FastaDir}/Output/`echo ${FastqName} | awk -F"/" '{print $NF}'`_bismark_bt2.sam
 /cs/icore/joshua.moss/scripts/bismark/bismark_v0.13.1/bismark_methylation_extractor -s $sam_name --bedGraph --counts --cytosine_report --genome_folder ${FastaDir} --CX --comprehensive -o ${FastaDir}/Output
